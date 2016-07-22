@@ -3,7 +3,6 @@ package routeinjector
 import (
 	"fmt"
 	"reflect"
-	"user/routeinjector"
 
 	"github.com/oleiade/reflections"
 )
@@ -24,7 +23,7 @@ func (ri *RouteInjector) RegisterModel(o interface{}) Schema {
 	fmt.Printf("OBJECT %+v\n", o)
 	fmt.Printf("FIELDS %+v\n", fields)
 
-	schema := routeinjector.Schema{}
+	schema := Schema{}
 
 	structTags, _ := reflections.Tags(o, "description")
 	fmt.Printf("%v+\n", structTags)
