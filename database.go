@@ -21,7 +21,7 @@ func (m *RouteInjector) StartDatabase() {
 
 //StopDatabase closes connections with Mongo Database
 func (m *RouteInjector) StopDatabase() {
-	m.Db.Close()
+	m.Session.Close()
 }
 
 //Person is an example schema

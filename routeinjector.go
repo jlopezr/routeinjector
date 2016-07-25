@@ -6,7 +6,6 @@ package routeinjector
 import (
 	"net/http"
 
-	"github.com/jlopezr/routeinjector"
 	"github.com/julienschmidt/httprouter"
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -14,9 +13,9 @@ import (
 
 // RouteInjector provides the root object of the system
 type RouteInjector struct {
-	Session *mgo.Session // MongoDB Session
-	Db      mgo.Database // MongoDB Database
-	Models  []Model      // List of models of the system
+	Session *mgo.Session  // MongoDB Session
+	Db      *mgo.Database // MongoDB Database
+	Models  []Model       // List of models of the system
 }
 
 // NewInjector creates a RouteInjector object and initializes the system
@@ -35,8 +34,9 @@ func (ri *RouteInjector) Stop() {
 	ri.StopDatabase()
 }
 
-func (ri *routeinjector.RouteInjector) doGet(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	c := ri.Db.C(params["collection"])
+func (ri *RouteInjector) doGet(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	c := ri.Db.C(params.ByName("collection"))
+	id := 1
 	q := c.Find(bson.M{"_id": id})
 	n, err := q.Count()
 	if err != nil {
