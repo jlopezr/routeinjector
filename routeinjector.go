@@ -4,14 +4,19 @@
 package routeinjector
 
 import (
+	"net/http"
+
+	"github.com/jlopezr/routeinjector"
 	"github.com/julienschmidt/httprouter"
 	mgo "gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // RouteInjector provides the root object of the system
 type RouteInjector struct {
-	Db     *mgo.Session //MongoDB Session
-	Models []Model      //List of models of the system
+	Session *mgo.Session // MongoDB Session
+	Db      mgo.Database // MongoDB Database
+	Models  []Model      // List of models of the system
 }
 
 // NewInjector creates a RouteInjector object and initializes the system
@@ -30,10 +35,22 @@ func (ri *RouteInjector) Stop() {
 	ri.StopDatabase()
 }
 
+func (ri *routeinjector.RouteInjector) doGet(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	c := ri.Db.C(params["collection"])
+	q := c.Find(bson.M{"_id": id})
+	n, err := q.Count()
+	if err != nil {
+		WriteError(w, 500, "Error counting results")
+	} else if n == 0 {
+		WriteError(w, 404, "Document not found")
+	}
+}
+
 // Model provides the definition of a model in the database
 type Model struct {
 	Name      string  // Name of the model
 	Plural    string  // Plural of the model
+	ID        string  // Identifier of the model in the db
 	Get       bool    // Is GET (retrieve one instance) method enabled
 	Put       bool    // Is PUT (update a instance) method enabled
 	Post      bool    // Is POST (add a new instance) method enabled
@@ -59,7 +76,7 @@ type Field struct {
 
 // NewModel creates a new Model by setting Name and Plural
 func NewModel(name string) *Model {
-	r := Model{Name: name, Plural: name + "s"}
+	r := Model{Name: name, Plural: name + "s", ID: "_id"}
 	return &r
 }
 

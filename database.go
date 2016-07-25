@@ -8,13 +8,15 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+//@TODO configure db connection
 //StartDatabase connects to the Mongo Database
 func (m *RouteInjector) StartDatabase() {
 	session, err := mgo.Dial("127.0.0.1")
 	if err != nil {
 		panic(err)
 	}
-	m.Db = session
+	m.Session = session
+	m.Db = session.DB("test")
 }
 
 //StopDatabase closes connections with Mongo Database
