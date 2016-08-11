@@ -7,3 +7,6 @@ before_install:
   - go get golang.org/x/tools/cmd/cover
 script:
   - $HOME/gopath/bin/goveralls -service=travis-ci
+addons:
+  code_climate:
+    repo_token: 22df24be81f8f42ba663491e75195d0defd5098da7030b6c6338c956f5350474
