@@ -5,3 +5,8 @@ engines:
 ratings:
   paths: []
 exclude_paths: []
+  govet:
+    enabled: true
+    ratings:
+    paths:
+      - "**.go"
